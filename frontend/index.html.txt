@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Music App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f0f8ff;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 32px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #songs {
+            margin-top: 30px;
+            font-size: 20px;
+            color: #555;
+        }
+        .song {
+            background-color: white;
+            padding: 10px;
+            margin: 10px auto;
+            width: 300px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>🎵 My Music App</h1>
+    <button onclick="getSongs()">Get Songs</button>
+    <div id="songs"></div>
+
+    <script>
+        // This is where you'll paste your backend URL later
+        const BACKEND_URL = 'PASTE_YOUR_BACKEND_URL_HERE';
+
+        function getSongs() {
+            // Show loading message
+            document.getElementById('songs').innerHTML = 'Loading songs...';
+
+            // Talk to backend
+            fetch(BACKEND_URL)
+                .then(response => response.json())
+                .then(data => {
+                    // Clear the loading message
+                    let html = '';
+                    
+                    // Show each song
+                    data.songs.forEach(song => {
+                        html += '<div class="song">🎵 ' + song + '</div>';
+                    });
+                    
+                    document.getElementById('songs').innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById('songs').innerHTML = '❌ Error: Could not get songs. Check console.';
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+</html>
