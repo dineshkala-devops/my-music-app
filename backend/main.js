@@ -1,8 +1,29 @@
 function main(params) {
     const songs = [
-        "Song A - Happy Melody",
-        "Song B - Summer Vibes", 
-        "Song C - Night Dreams"
+        {
+            name: "Song A - Happy Melody",
+            url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+        },
+        {
+            name: "Song B - Summer Vibes",
+            url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+        },
+        {
+            name: "Song C - Night Dreams",
+            url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+        },
+        {
+            name: "Song D - Ocean Waves",
+            url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
+        },
+        {
+            name: "Song E - Mountain High",
+            url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
+        },
+        {
+            name: "Song F - City Lights",
+            url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3"
+        }
     ];
     
     return {

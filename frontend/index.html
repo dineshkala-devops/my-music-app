@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>dinesh Music App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Music App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,8 +13,9 @@
         }
         h1 {
             color: #333;
+            font-size: 2.5em;
         }
-        button {
+        .main-btn {
             background-color: #4CAF50;
             color: white;
             padding: 15px 32px;
@@ -21,55 +24,125 @@
             border-radius: 8px;
             cursor: pointer;
         }
-        button:hover {
+        .main-btn:hover {
             background-color: #45a049;
         }
         #songs {
             margin-top: 30px;
-            font-size: 20px;
+            font-size: 18px;
             color: #555;
         }
         .song {
             background-color: white;
-            padding: 10px;
+            padding: 15px;
             margin: 10px auto;
-            width: 300px;
-            border-radius: 5px;
+            width: 400px;
+            border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .song-name {
+            font-weight: bold;
+        }
+        .play-btn {
+            background-color: #2196F3;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .play-btn:hover {
+            background-color: #1976D2;
+        }
+        .stop-btn {
+            background-color: #f44336;
+        }
+        .stop-btn:hover {
+            background-color: #d32f2f;
+        }
+        #now-playing {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            display: none;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
-    <h1>🎵 My Music App</h1>
-    <button onclick="getSongs()">Get Songs</button>
+    <h1>&#127925; My Music App</h1>
+    <button class="main-btn" onclick="getSongs()">Get Songs</button>
+    <div id="now-playing"></div>
     <div id="songs"></div>
 
     <script>
-        // This is where you'll paste your backend URL later
-        const BACKEND_URL = 'https://getsongs.24spfov32o7l.jp-tok.codeengine.appdomain.cloud';
+        var BACKEND_URL = 'https://getsongs.24spfov32o7l.jp-tok.codeengine.appdomain.cloud';
+        var currentAudio = null;
+        var currentButton = null;
 
         function getSongs() {
-            // Show loading message
             document.getElementById('songs').innerHTML = 'Loading songs...';
-
-            // Talk to backend
+            
             fetch(BACKEND_URL)
-                .then(response => response.json())
-                .then(data => {
-                    // Clear the loading message
-                    let html = '';
-                    
-                    // Show each song
-                    data.songs.forEach(song => {
-                        html += '<div class="song">🎵 ' + song + '</div>';
-                    });
-                    
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    var html = '';
+                    for (var i = 0; i < data.songs.length; i++) {
+                        var song = data.songs[i];
+                        html += '<div class="song">';
+                        html += '<span class="song-name">&#127925; ' + song.name + '</span>';
+                        html += '<button class="play-btn" id="btn-' + i + '" onclick="playSong(\'' + song.url + '\', \'' + song.name + '\', ' + i + ')">&#9654; Play</button>';
+                        html += '</div>';
+                    }
                     document.getElementById('songs').innerHTML = html;
                 })
-                .catch(error => {
-                    document.getElementById('songs').innerHTML = '❌ Error: Could not get songs. Check console.';
+                .catch(function(error) {
+                    document.getElementById('songs').innerHTML = 'Error: Could not get songs.';
                     console.error('Error:', error);
                 });
+        }
+
+        function playSong(url, name, index) {
+            var btn = document.getElementById('btn-' + index);
+            var nowPlaying = document.getElementById('now-playing');
+            
+            if (currentAudio && currentButton === btn) {
+                currentAudio.pause();
+                currentAudio = null;
+                btn.innerHTML = '&#9654; Play';
+                btn.classList.remove('stop-btn');
+                currentButton = null;
+                nowPlaying.style.display = 'none';
+                return;
+            }
+            
+            if (currentAudio) {
+                currentAudio.pause();
+                currentButton.innerHTML = '&#9654; Play';
+                currentButton.classList.remove('stop-btn');
+            }
+            
+            currentAudio = new Audio(url);
+            currentAudio.play();
+            currentButton = btn;
+            btn.innerHTML = '&#9632; Stop';
+            btn.classList.add('stop-btn');
+            
+            nowPlaying.innerHTML = '&#127911; Now Playing: <strong>' + name + '</strong>';
+            nowPlaying.style.display = 'block';
+            
+            currentAudio.onended = function() {
+                btn.innerHTML = '&#9654; Play';
+                btn.classList.remove('stop-btn');
+                currentAudio = null;
+                currentButton = null;
+                nowPlaying.style.display = 'none';
+            };
         }
     </script>
 </body>
